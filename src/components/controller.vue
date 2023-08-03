@@ -64,12 +64,21 @@ function playWorkSound() {
 
 // 增加音量调节函数
 function adjustVolume(level: number) {
+  playDi();
   // 将音量级别限制在 1 到 3 之间
   level = Math.max(1, Math.min(3, level));
   console.log(level)
   // 在每次播放时更新音量
   const acWork = document.getElementById("air-extractor-fan") as HTMLAudioElement;
   acWork.volume = level * 0.33;
+  acWork.load();
+  acWork.play();
+
+  playWorkSoundTimeoutId = setTimeout(() => {
+    playWorkSoundIntervalId = setInterval(() => {
+      acWork.currentTime = noiseStartTime;
+    }, noiseDuration * 1000);
+  }, noiseStartTime * 1000);
   homeStore.changeLevel(level);
 }
 
