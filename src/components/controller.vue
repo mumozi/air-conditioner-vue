@@ -1,20 +1,17 @@
 <!--
  * @Description: Controller
- * @Author: 安知鱼
- * @Email: anzhiyu-c@qq.com
- * @Date: 2022-11-29 15:21:38
- * @LastEditTime: 2023-02-15 11:05:20
- * @LastEditors: 安知鱼
+ * @Author: Sugar
+ * @Date: 2023-08-03
 -->
 <script lang="ts" setup>
 import AnzhiyuButton from "@/components/anzhiyu-button.vue";
-// import { getAssetURL } from "@/utils/load_assets";
+import { getAssetURL } from "@/utils/load_assets";
 import useHomeStore from "@/stores/modules/home";
-import { storeToRefs } from "pinia";
+import {storeToRefs} from "pinia";
 
 const homeStore = useHomeStore();
 
-let { status } = storeToRefs(homeStore) as any;
+let { status, level } = storeToRefs(homeStore) as any;
 let playStartSoundTimeoutId: any;
 let playWorkSoundTimeoutId: any;
 let playWorkSoundIntervalId: any;
@@ -48,11 +45,13 @@ const noiseStartTime = 2;
 // 噪音持续时间
 const noiseDuration = 56;
 
-/**
- * 播放空调工作声音
- */
 function playWorkSound() {
   const acWork = document.getElementById("air-extractor-fan") as HTMLAudioElement;
+
+  // 根据音量级别计算音量大小
+  // 设置音量
+  acWork.volume = 0.33;
+
   acWork.load();
   acWork.play();
 
@@ -62,6 +61,18 @@ function playWorkSound() {
     }, noiseDuration * 1000);
   }, noiseStartTime * 1000);
 }
+
+// 增加音量调节函数
+function adjustVolume(level: number) {
+  // 将音量级别限制在 1 到 3 之间
+  level = Math.max(1, Math.min(3, level));
+  console.log(level)
+  // 在每次播放时更新音量
+  const acWork = document.getElementById("air-extractor-fan") as HTMLAudioElement;
+  acWork.volume = level * 0.33;
+  homeStore.changeLevel(level);
+}
+
 
 /**
  * 切换空调工作状态
@@ -80,7 +91,7 @@ function toggleAC(status: boolean) {
     if (playWorkSoundIntervalId) clearInterval(playWorkSoundIntervalId);
 
     // acWork.currentTime = noiseStartTime + noiseDuration;
-
+    console.log(acWork.duration)
     acWork.currentTime = acWork.duration - 2;
   } else {
     playStartSound();
@@ -91,6 +102,9 @@ function toggleAC(status: boolean) {
 // const SOUND_DI_PATH = getAssetURL("audio/di.m4a");
 // const SOUND_AC_WORK_PATH = getAssetURL("audio/ac-work.m4a");
 // const SOUND_AIR_EXTRACTOR_FAN_PATH = getAssetURL("audio/air-extractor-fan.m4a");
+// const SOUND_DI_PATH_MP3 = getAssetURL("audio/di.mp3");
+// const SOUND_AC_WORK_PATH_MP3 = getAssetURL("audio/ac-work.mp3");
+// const SOUND_AIR_EXTRACTOR_FAN_PATH_MP3 = getAssetURL("audio/air-extractor-fan.mp3");
 const SOUND_DI_PATH = "https://npm.elemecdn.com/anzhiyu-air-conditioner@1.0.0/di.m4a";
 const SOUND_AC_WORK_PATH = "https://npm.elemecdn.com/anzhiyu-air-conditioner@1.0.0/ac-work.m4a";
 const SOUND_AIR_EXTRACTOR_FAN_PATH =
@@ -159,6 +173,44 @@ const SOUND_AIR_EXTRACTOR_FAN_PATH_MP3 =
       >
         <template #default>
           <div class="sunny-icon"></div>
+        </template>
+      </AnzhiyuButton>
+    </div>
+<!--风速，默认1级-->
+    <div>
+      <AnzhiyuButton
+          :type="(level == 1) ? 'on' : 'default'"
+          round
+          size="large"
+          class="clod-btn"
+          @click="adjustVolume(1)"
+      >
+        <template #default>
+          <div class="l-icon"></div>
+        </template>
+      </AnzhiyuButton>
+
+      <AnzhiyuButton
+          :type="(level == 2) ? 'on' : 'default'"
+          round
+          size="large"
+          class="clod-btn"
+          @click="adjustVolume(2)"
+      >
+        <template #default>
+          <div class="m-icon"></div>
+        </template>
+      </AnzhiyuButton>
+
+      <AnzhiyuButton
+          :type="(level == 3) ? 'on' : 'default'"
+          round
+          size="large"
+          class="clod-btn"
+          @click="adjustVolume(3)"
+      >
+        <template #default>
+          <div class="h-icon"></div>
         </template>
       </AnzhiyuButton>
     </div>
@@ -239,6 +291,21 @@ const SOUND_AIR_EXTRACTOR_FAN_PATH_MP3 =
       @extend .air-conditioner-controller-icon;
       width: 3em;
       height: 3em;
+    }
+
+    .l-icon {
+      --un-icon: url('data:image/svg+xml;utf8,<svg t="1691031880426" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13831" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M320 64c35.4 0 64 28.6 64 64v704h384c35.4 0 64 28.6 64 64s-28.6 64-64 64H320c-35.4 0-64-28.6-64-64V128c0-35.4 28.6-64 64-64z" p-id="13832" fill="currentColor"></path></svg>');
+      @extend .air-conditioner-controller-icon;
+    }
+
+    .m-icon {
+      --un-icon: url('data:image/svg+xml;utf8,<svg t="1691040751550" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="16006" width="200" height="200"><path d="M109.4 66.8c27-8.2 56.2 2.2 71.8 25.8l330.8 496L842.8 92.4c15.6-23.4 44.8-34 71.8-25.8S960 99.8 960 128v768c0 35.4-28.6 64-64 64s-64-28.6-64-64V339.4L565.2 739.6c-11.8 17.8-31.8 28.4-53.2 28.4s-41.4-10.6-53.2-28.4L192 339.4V896c0 35.4-28.6 64-64 64S64 931.4 64 896V128c0-28.2 18.4-53 45.4-61.2z" p-id="16007" fill="currentColor"></path></svg>');
+      @extend .air-conditioner-controller-icon;
+    }
+
+    .h-icon {
+      --un-icon: url('data:image/svg+xml;utf8,<svg t="1691040877273" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="18107" width="200" height="200"><path d="M768 512v384c0 35.4 28.6 64 64 64s64-28.6 64-64V128c0-35.4-28.6-64-64-64s-64 28.6-64 64v256H256V128c0-35.4-28.6-64-64-64S128 92.6 128 128v768c0 35.4 28.6 64 64 64s64-28.6 64-64V512h512z" p-id="18108" fill="currentColor"></path></svg>');
+      @extend .air-conditioner-controller-icon;
     }
   }
 }

@@ -17,6 +17,11 @@ Air Conditioner Vue
 </p>
 <br>
 
+## 二次修改
+- update#原始声音及素材文件本地
+- add#风速声音调整为三级控制，默认1级
+
+
 该项目创意来自 [云游君](https://www.yunyoujun.cn/), 使用 VUE3 + VITE + TS 构建, 未使用任何 UI 框架，无多余样式资源，打包后仅 84kb。
 
 > [云空调，便携小空调，#VUE3 #VITE #TS ｜安知鱼](https://anzhiy.cn/air-conditioner/)

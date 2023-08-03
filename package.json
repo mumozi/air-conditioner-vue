@@ -5,12 +5,12 @@
   "private": true,
   "packageManager": "npm@8.18.0",
   "author": {
-    "url": "https://anzhiy.cn",
-    "email": "chen@anzhiy.cn",
-    "name": "anzhiyu"
+    "url": "https://blog.imsugar.cn",
+    "email": "mumozi12@qq.cn",
+    "name": "mumozi"
   },
   "repository": {
-    "url": "https://github.com/anzhiyu-c/air-conditioner-vue"
+    "url": "https://github.com/mumozi/air-conditioner-vue"
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",

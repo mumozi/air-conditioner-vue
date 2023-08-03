@@ -83,4 +83,9 @@ const props = defineProps({
   background-color: orange;
   color: white;
 }
+.anzhiyu-button-on {
+  background-color: #CC5539;
+  color: white;
+}
+
 </style>
